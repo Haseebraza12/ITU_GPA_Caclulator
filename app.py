@@ -2,6 +2,8 @@ import sys
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QMessageBox, QHBoxLayout, QSpinBox
 )
+from PyQt6.QtGui import QPixmap, QFont
+from PyQt6.QtCore import Qt
 
 
 class GPA_Calculator(QMainWindow):
@@ -23,14 +25,30 @@ class GPA_Calculator(QMainWindow):
 
         self.layout = QVBoxLayout()
 
+        # Add logo
+        self.logo_label = QLabel(self)
+        pixmap = QPixmap("images.jpeg")  # Replace with the path to your logo image
+        self.logo_label.setPixmap(pixmap)
+        self.logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.layout.addWidget(self.logo_label)
+
+        # Add author information
+        self.author_label = QLabel("Author: Haseeb Ur Rehman\nRollno: Bscs22115")
+        self.author_label.setFont(QFont("Arial", 12, QFont.Weight.Bold))
+        self.author_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.layout.addWidget(self.author_label)
+
         self.num_courses_label = QLabel("Enter number of courses:")
+        self.num_courses_label.setFont(QFont("Arial", 12, QFont.Weight.Bold))
         self.layout.addWidget(self.num_courses_label)
 
         self.num_courses_input = QSpinBox()
+        self.num_courses_input.setFont(QFont("Arial", 12))
         self.num_courses_input.setMinimum(1)
         self.layout.addWidget(self.num_courses_input)
 
         self.next_button = QPushButton("Next")
+        self.next_button.setFont(QFont("Arial", 12, QFont.Weight.Bold))
         self.next_button.clicked.connect(self.create_course_fields)
         self.layout.addWidget(self.next_button)
 
@@ -38,6 +56,7 @@ class GPA_Calculator(QMainWindow):
         self.layout.addLayout(self.course_fields_layout)
 
         self.calculate_button = QPushButton("Calculate GPA")
+        self.calculate_button.setFont(QFont("Arial", 12, QFont.Weight.Bold))
         self.calculate_button.clicked.connect(self.calculate_gpa)
         self.layout.addWidget(self.calculate_button)
         self.calculate_button.setEnabled(False)
@@ -46,10 +65,28 @@ class GPA_Calculator(QMainWindow):
         container.setLayout(self.layout)
         self.setCentralWidget(container)
 
+        # Set background gradient
+        self.setStyleSheet("""
+            QMainWindow {
+                background: qlineargradient(
+                    spread:pad, x1:0, y1:0, x2:1, y2:1,
+                    stop:0 lightblue, stop:1 white
+                );
+            }
+            QLabel, QLineEdit, QSpinBox, QPushButton {
+                font-size: 14px;
+            }
+        """)
+
     def create_course_fields(self):
+        # Hide the number of courses input and the next button
+        self.num_courses_label.hide()
+        self.num_courses_input.hide()
+        self.next_button.hide()
+
         self.course_fields_layout.setParent(None)
         self.course_fields_layout = QVBoxLayout()
-        self.layout.insertLayout(3, self.course_fields_layout)
+        self.layout.insertLayout(4, self.course_fields_layout)
 
         self.course_names = []
         self.course_credits = []
@@ -62,6 +99,7 @@ class GPA_Calculator(QMainWindow):
 
             course_name_input = QLineEdit()
             course_name_input.setPlaceholderText(f"Course {i+1} Name")
+            course_name_input.setFont(QFont("Arial", 12))
             course_layout.addWidget(course_name_input)
             self.course_names.append(course_name_input)
 
@@ -69,11 +107,13 @@ class GPA_Calculator(QMainWindow):
             course_credit_input.setMinimum(1)
             course_credit_input.setMaximum(5)
             course_credit_input.setPrefix("Credits: ")
+            course_credit_input.setFont(QFont("Arial", 12))
             course_layout.addWidget(course_credit_input)
             self.course_credits.append(course_credit_input)
 
             course_grade_input = QLineEdit()
             course_grade_input.setPlaceholderText("Grade")
+            course_grade_input.setFont(QFont("Arial", 12))
             course_layout.addWidget(course_grade_input)
             self.course_grades.append(course_grade_input)
 
